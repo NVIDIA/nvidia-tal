@@ -1,0 +1,10 @@
+option('libonly', type: 'boolean', description: 'Build library only')
+option('tests', type: 'feature', description: 'Build tests')
+option('nvidia-tal', type: 'feature', description: 'Build nvidia-tal')
+option('nvidia-shmem', type: 'feature', description: 'Build nvidia-shmem')
+option('smbus-telemetry-target', type: 'feature', description: 'Build smbus-telemetry-target')
+option('libsmbus-test', type: 'feature', description: 'Build smbus-telemetry-target test')
+option('smbus-sysfs-path', type : 'string', value : '/dev/null', description : 'SMBus Slave Device sysfs path')
+option('smbus-telemetry-config-csv', type : 'string', value : '/usr/share/smbus-telemetry-target/smbus-telemetry-config.csv', description : 'SMBus slave config csv')
+option('smbus-data-record', type : 'integer', value : 8, description : 'SMBus Data Record size')
+

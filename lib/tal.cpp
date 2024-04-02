@@ -20,9 +20,11 @@ static void initTal() {
   // Iterate over each namespace in the talModule enum class
   for (TalModule talModule : talModulesArray) {
     switch (talModule) {
+#ifdef ENABLE_SMBUS
       case TalModule::Smbus:
         modules.emplace(talModule, std::make_unique<SmBusModule>());
         break;
+#endif
       case TalModule::SharedMem:
         modules.emplace(talModule, std::make_unique<SharedMemModule>());
         break;

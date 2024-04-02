@@ -1,5 +1,6 @@
 #include "tal_module.hpp"
 
+#ifdef ENABLE_SMBUS
 namespace tal {
 class SmBusModule : public TelemetryHandler {
   public:
@@ -18,3 +19,4 @@ class SmBusModule : public TelemetryHandler {
     virtual ~SmBusModule() = default;
 };
 }
+#endif

@@ -30,6 +30,8 @@ class SharedMemModule : public TelemetryHandler {
 
     std::vector<nv::shmem::SensorValue> getAllMrds(const std::string& mrdNamespace) override;
 
+    std::vector<std::string> getMrdNamespaces() override;
+
     bool namespaceInit(const std::string& processName) override;
 
     virtual ~SharedMemModule() = default;

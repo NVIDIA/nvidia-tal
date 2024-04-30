@@ -107,5 +107,13 @@ class TelemetryAggregator {
      * absence of given shared memory namespace exception is thrown.
      */
     static std::vector<nv::shmem::SensorValue> getAllMrds(const std::string& mrdNamespace);
+
+    // Method to get all metric report collection from the shmem
+    /**
+     * @brief This API returns all metric report collection for a shared mem namespace 
+     *
+     * @return values - metric report collection values.
+     */
+    static std::vector<std::string> getMrdNamespaces();
 };
 } // tal namespace

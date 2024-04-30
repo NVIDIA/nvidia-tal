@@ -79,6 +79,14 @@ class TelemetryHandler {
      */
     virtual std::vector<nv::shmem::SensorValue> getAllMrds(const std::string& mrdNamespace) = 0;
 
+    // Method to get all metric repor collection from the shmem
+    /**
+     * @brief This API returns all metric report collection for a shared mem namespace 
+     *
+     * @return values - metric report collection values.
+     */
+    virtual std::vector<std::string> getMrdNamespaces() {return {};};
+
     virtual ~TelemetryHandler() = default;
 };
 }

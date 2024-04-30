@@ -44,3 +44,7 @@ bool tal::SharedMemModule::namespaceInit(const std::string& processName) {
 std::vector<nv::shmem::SensorValue> tal::SharedMemModule::getAllMrds(const std::string& mrdNamespace) {
   return nv::shmem::sensor_aggregation::getAllMRDValues(mrdNamespace);
 }
+
+std::vector<std::string> tal::SharedMemModule::getMrdNamespaces(){
+  return nv::shmem::sensor_aggregation::getMrdNamespacesValues();
+}

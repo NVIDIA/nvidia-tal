@@ -88,6 +88,19 @@ std::vector<nv::shmem::SensorValue> TelemetryAggregator::getAllMrds(const std::s
   return {};
 }
 
+std::vector<std::string> TelemetryAggregator::getMrdNamespaces() {
+  if(!talInit){
+    lg2::error("namespaceInit for tal is not invoked");
+    return {};
+  }
+  for (auto& [talModule, module] : modules) {
+    if (talModule == TalModule::SharedMem) {
+      return module->getMrdNamespaces();
+    }
+  }
+  return {};
+}
+
 bool TelemetryAggregator::namespaceInit(ProcessType type, const std::string& processName) {
   if(talInit){
     lg2::error("namespaceInit for tal is already invoked");

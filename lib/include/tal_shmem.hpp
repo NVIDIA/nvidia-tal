@@ -1,6 +1,6 @@
 /*
- * SPDX-FileCopyrightText: Copyright (c) 2023-2024 NVIDIA CORPORATION & AFFILIATES. All rights reserved.
- * SPDX-License-Identifier: Apache-2.0
+ * SPDX-FileCopyrightText: Copyright (c) 2023-2024 NVIDIA CORPORATION &
+ * AFFILIATES. All rights reserved. SPDX-License-Identifier: Apache-2.0
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,18 +17,20 @@
 
 #include "tal_module.hpp"
 
-namespace tal {
-class SharedMemModule : public TelemetryHandler {
+namespace tal
+{
+class SharedMemModule : public TelemetryHandler
+{
   public:
     int updateTelemetry(const std::string& devicePath,
                         const std::string& interface,
                         const std::string& propName,
-                        std::vector<uint8_t>& rawData,
-                        const uint64_t timestamp, int rc,
-                        nv::sensor_aggregation::DbusVariantType& value,
+                        std::vector<uint8_t>& rawData, const uint64_t timestamp,
+                        int rc, nv::sensor_aggregation::DbusVariantType& value,
                         const std::string associatedEntityPath = {}) override;
 
-    std::vector<nv::shmem::SensorValue> getAllMrds(const std::string& mrdNamespace) override;
+    std::vector<nv::shmem::SensorValue>
+        getAllMrds(const std::string& mrdNamespace) override;
 
     std::vector<std::string> getMrdNamespaces() override;
 
@@ -36,4 +38,4 @@ class SharedMemModule : public TelemetryHandler {
 
     virtual ~SharedMemModule() = default;
 };
-}
+} // namespace tal

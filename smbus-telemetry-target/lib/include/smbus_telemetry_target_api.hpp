@@ -1,6 +1,6 @@
 /*
- * SPDX-FileCopyrightText: Copyright (c) 2023-2024 NVIDIA CORPORATION & AFFILIATES. All rights reserved.
- * SPDX-License-Identifier: Apache-2.0
+ * SPDX-FileCopyrightText: Copyright (c) 2023-2024 NVIDIA CORPORATION &
+ * AFFILIATES. All rights reserved. SPDX-License-Identifier: Apache-2.0
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,7 +14,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 
 #pragma once
 
@@ -45,5 +44,6 @@ bool smbusSlaveInit();
  */
 int updateSmbusTelemetry(const std::string& devicePath,
                          const std::string& interface,
-                         const std::string& propName, std::vector<uint8_t>& data,
-                         const uint64_t timestamp, int rc);
+                         const std::string& propName,
+                         std::vector<uint8_t>& data, const uint64_t timestamp,
+                         int rc);

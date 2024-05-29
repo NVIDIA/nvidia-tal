@@ -1,6 +1,6 @@
 /*
- * SPDX-FileCopyrightText: Copyright (c) 2023-2024 NVIDIA CORPORATION & AFFILIATES. All rights reserved.
- * SPDX-License-Identifier: Apache-2.0
+ * SPDX-FileCopyrightText: Copyright (c) 2023-2024 NVIDIA CORPORATION &
+ * AFFILIATES. All rights reserved. SPDX-License-Identifier: Apache-2.0
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,6 +15,7 @@
  * limitations under the License.
  */
 
+#include "config.h"
 
 #include <phosphor-logging/lg2.hpp>
 
@@ -25,8 +26,6 @@
 #include <sstream>
 #include <string>
 #include <vector>
-
-#include "config.h"
 
 namespace smbus_telemetry_update
 {
@@ -62,16 +61,12 @@ class SmbusSensorData
     uint64_t previousTimeStamp;
     bool initTs;
 
-    SmbusSensorData(): length(0), staleBit(0), staleOffset(0), offset(0),
-        previousTimeStamp(0), initTs(true)
-    {
+    SmbusSensorData() :
+        length(0), staleBit(0), staleOffset(0), offset(0), previousTimeStamp(0),
+        initTs(true)
+    {}
+    ~SmbusSensorData() {}
 
-    }
-    ~SmbusSensorData()
-    {
-
-    }
-    
     /* @brief Helper function to get smbus offset length */
     int getOffsetDataLength()
     {

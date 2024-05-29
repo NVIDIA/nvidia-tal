@@ -1,6 +1,6 @@
 /*
- * SPDX-FileCopyrightText: Copyright (c) 2023-2024 NVIDIA CORPORATION & AFFILIATES. All rights reserved.
- * SPDX-License-Identifier: Apache-2.0
+ * SPDX-FileCopyrightText: Copyright (c) 2023-2024 NVIDIA CORPORATION &
+ * AFFILIATES. All rights reserved. SPDX-License-Identifier: Apache-2.0
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,10 +14,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
-
-
-
 
 #include "smbus_telemetry_target_api.hpp"
 
@@ -37,7 +33,8 @@ bool smbusSlaveInit()
         return false;
     }
 
-    int rc = smbus_telemetry_update::loadFromCSV(SMBUS_SLAVE_TELEMETRY_CONFIG_CSV);
+    int rc =
+        smbus_telemetry_update::loadFromCSV(SMBUS_SLAVE_TELEMETRY_CONFIG_CSV);
     if (rc != 0)
     {
         lg2::error("Failed to load data from CSV");
@@ -49,18 +46,19 @@ bool smbusSlaveInit()
 
 int updateSmbusTelemetry(const std::string& devicePath,
                          const std::string& interface,
-                         const std::string& propName, std::vector<uint8_t>& data,
-                         const uint64_t timestamp, int rc)
+                         const std::string& propName,
+                         std::vector<uint8_t>& data, const uint64_t timestamp,
+                         int rc)
 {
     // smbusSlaveInit not success telemetry update call return gracefully
     if (!smbusTelemetryInit)
-	return 0;
+        return 0;
 
     int retVal = smbus_telemetry_update::smbusSlaveUpdate(
-		devicePath, interface, propName, data, timestamp, rc);
+        devicePath, interface, propName, data, timestamp, rc);
     if (retVal != 0)
     {
-	return retVal;
+        return retVal;
     }
 
     return 0;

@@ -1,6 +1,6 @@
 /*
- * SPDX-FileCopyrightText: Copyright (c) 2023-2024 NVIDIA CORPORATION & AFFILIATES. All rights reserved.
- * SPDX-License-Identifier: Apache-2.0
+ * SPDX-FileCopyrightText: Copyright (c) 2023-2024 NVIDIA CORPORATION &
+ * AFFILIATES. All rights reserved. SPDX-License-Identifier: Apache-2.0
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,11 +15,8 @@
  * limitations under the License.
  */
 
-
-
-
-
 #include "smbus_telemetry_update.hpp"
+
 #include "error.hpp"
 
 namespace smbus_telemetry_update
@@ -31,11 +28,16 @@ int smbusSlaveVer;
 
 bool isValidCSVData(std::vector<std::vector<std::string>>& csvData)
 {
-    return(csvData[0][0] != "slave_version" || csvData[1][0] != "staleness_threshold"
-        || csvData[2][0] != "offset" || csvData[2][1] != "length" 
-        || csvData[2][2] != "data_format" || csvData[2][3] != "dbus_objectpath" 
-        || csvData[2][4] != "dbus_interface" || csvData[2][5] != "dbus_property" 
-        || csvData[2][6] != "stale_offset" || csvData[2][7] != "stale_bit") ? false:true;
+    return (csvData[0][0] != "slave_version" ||
+            csvData[1][0] != "staleness_threshold" ||
+            csvData[2][0] != "offset" || csvData[2][1] != "length" ||
+            csvData[2][2] != "data_format" ||
+            csvData[2][3] != "dbus_objectpath" ||
+            csvData[2][4] != "dbus_interface" ||
+            csvData[2][5] != "dbus_property" ||
+            csvData[2][6] != "stale_offset" || csvData[2][7] != "stale_bit")
+               ? false
+               : true;
 }
 
 int loadFromCSV(const std::string& filename)
@@ -99,15 +101,16 @@ int loadFromCSV(const std::string& filename)
             }
             else
             {
-                if(val.size() != SMBUS_DATA_RECORD_SIZE)
+                if (val.size() != SMBUS_DATA_RECORD_SIZE)
                 {
                     lg2::error("Invalid smbus sensor data: {RECORDSIZE}",
-                    "RECORDSIZE", val.size());
+                               "RECORDSIZE", val.size());
                     return ErrorCode::InvalidConfigData;
                 }
                 SmbusSensorData smbusSensorData;
 
-                smbusSensorData.setSensorOffset(static_cast<uint16_t>(std::stoi(val[0], nullptr, 16)));
+                smbusSensorData.setSensorOffset(
+                    static_cast<uint16_t>(std::stoi(val[0], nullptr, 16)));
                 smbusSensorData.setOffsetDataLength(stoi(val[1]));
                 smbusSensorData.setDbusObjPath(val[3]);
                 smbusSensorData.setDbusIface(val[4]);
@@ -115,7 +118,8 @@ int loadFromCSV(const std::string& filename)
 
                 if (val[6] != "NA")
                 {
-                    smbusSensorData.setStaleOffset(static_cast<int>(std::stoi(val[6], nullptr, 16)));
+                    smbusSensorData.setStaleOffset(
+                        static_cast<int>(std::stoi(val[6], nullptr, 16)));
                 }
                 else
                 {
@@ -139,8 +143,8 @@ int loadFromCSV(const std::string& filename)
                 smbusSensorDataCount++;
             }
         }
-        lg2::info("Total smbus sensor records configured: {COUNT}",
-                "COUNT", smbusSensorDataCount);
+        lg2::info("Total smbus sensor records configured: {COUNT}", "COUNT",
+                  smbusSensorDataCount);
     }
     catch (const std::exception& e)
     {
@@ -157,10 +161,10 @@ int smbusSlaveUpdate(std::string dbusObjPath, std::string iface,
                      uint64_t timestamp, int rc)
 {
     std::string key = dbusObjPath + "_" + iface + "_" + propName;
-    
+
     if (sensorDataMap.find(key) == sensorDataMap.end())
     {
-	// SmbusUpdate sensor configuration not supported.
+        // SmbusUpdate sensor configuration not supported.
         return 0;
     }
 
@@ -199,10 +203,11 @@ int smbusSlaveUpdate(std::string dbusObjPath, std::string iface,
     {
         std::vector<uint8_t>& valBytes = value;
         eepromFile.seekp(sensorDataMap[key].getSensorOffset());
-        eepromFile.write(reinterpret_cast<const char*>(valBytes.data()),
-                         std::min((uint8_t)sensorDataMap[key].getOffsetDataLength(),
-                                  // commit min of actial bytes or mapped bytes
-                                  static_cast<uint8_t>(valBytes.size())));
+        eepromFile.write(
+            reinterpret_cast<const char*>(valBytes.data()),
+            std::min((uint8_t)sensorDataMap[key].getOffsetDataLength(),
+                     // commit min of actial bytes or mapped bytes
+                     static_cast<uint8_t>(valBytes.size())));
     }
     catch (const std::exception& e)
     {
@@ -214,7 +219,8 @@ int smbusSlaveUpdate(std::string dbusObjPath, std::string iface,
     try
     {
         // Avoid stale offset update if staleness details configure as NA
-        if (sensorDataMap[key].getStaleOffset() != -1 || sensorDataMap[key].getStaleBit() != -1)
+        if (sensorDataMap[key].getStaleOffset() != -1 ||
+            sensorDataMap[key].getStaleBit() != -1)
         {
             // read
             uint8_t existingStaleValue = 0;
@@ -235,7 +241,7 @@ int smbusSlaveUpdate(std::string dbusObjPath, std::string iface,
             // write
             eepromFile.seekp(sensorDataMap[key].getStaleOffset());
             eepromFile.write(reinterpret_cast<char*>(&existingStaleValue),
-                            sizeof(existingStaleValue));
+                             sizeof(existingStaleValue));
         }
     }
     catch (const std::exception& e)

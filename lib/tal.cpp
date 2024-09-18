@@ -25,11 +25,11 @@ using namespace tal;
 
 std::unordered_map<TalModule, std::unique_ptr<TelemetryHandler>> modules;
 
-TalModule talModulesArray[] = {TalModule::SharedMem,
+TalModule talModulesArray[] = {
 #ifdef ENABLE_SMBUS
-                               TalModule::Smbus
+    TalModule::Smbus,
 #endif
-};
+    TalModule::SharedMem};
 
 bool talInit = false;
 

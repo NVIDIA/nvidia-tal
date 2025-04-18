@@ -64,11 +64,20 @@ void TelemetryAggregator::updateTelemetry(
     nv::sensor_aggregation::DbusVariantType& value,
     const std::string associatedEntityPath)
 {
+    // Limit how many times this error message can be logged in a row.
+    // This will log once per 10 minutes if there are continuous errors.
+    static uint repeatFailCount = 0;
     if (!talInit)
     {
-        lg2::error("namespaceInit for tal is not invoked");
+        repeatFailCount++;
+        if (repeatFailCount <= 5 ||
+            repeatFailCount % TAL_INIT_FAIL_COUNT_LOOP == 0)
+        {
+            lg2::error("namespaceInit for tal is not invoked");
+        }
         return;
     }
+    repeatFailCount = 0;
 
     for (auto& [ns, module] : modules)
     {
@@ -85,7 +94,6 @@ std::vector<nv::shmem::SensorValue>
         lg2::error("namespaceInit for tal is not invoked");
         return {};
     }
-
     for (auto& [talModule, module] : modules)
     {
         if (talModule == TalModule::SharedMem)

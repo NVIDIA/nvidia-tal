@@ -54,6 +54,11 @@ Get all MRDs:
 #include <unordered_map>
 #include <vector>
 
+// This value limits how many Tal init fail messages can be logged in a row.
+// Assuming there are 50 sensors, with 1 error per sensor per second,
+// this will log once per 10 minutes
+#define TAL_INIT_FAIL_COUNT_LOOP 180000
+
 namespace tal
 {
 enum class ProcessType

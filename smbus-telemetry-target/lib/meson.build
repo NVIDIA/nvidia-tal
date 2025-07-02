@@ -32,6 +32,7 @@ libsmbus_telemetry = static_library(
         smbus_telemetry_target_deps,
         conf_h_dep,
     ],
+    cpp_args: ['-fno-lto'],
     install: true,
 )
 

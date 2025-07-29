@@ -5,21 +5,19 @@ subdir('include')
 smbus_telemetry_target_gen = []
 
 phosphor_logging = dependency('phosphor-logging')
-smbus_telemetry_target_deps = [
-    phosphor_logging
-]
+smbus_telemetry_target_deps = [phosphor_logging]
 
 conf_data = configuration_data()
 conf_data.set('libonly', get_option('libonly'))
 conf_data.set_quoted('SMBUS_SYSFS_PATH', get_option('smbus-sysfs-path'))
-conf_data.set_quoted('SMBUS_SLAVE_TELEMETRY_CONFIG_CSV', get_option('smbus-telemetry-config-csv'))
+conf_data.set_quoted(
+    'SMBUS_SLAVE_TELEMETRY_CONFIG_CSV',
+    get_option('smbus-telemetry-config-csv'),
+)
 conf_data.set('SMBUS_DATA_RECORD_SIZE', get_option('smbus-data-record'))
 conf_h_dep = declare_dependency(
     include_directories: include_directories('.'),
-    sources: configure_file(
-        output: 'config.h',
-        configuration: conf_data
-    )
+    sources: configure_file(output: 'config.h', configuration: conf_data),
 )
 
 libsmbus_telemetry = static_library(
@@ -28,10 +26,7 @@ libsmbus_telemetry = static_library(
     'smbus_telemetry_update.cpp',
     implicit_include_directories: false,
     include_directories: [smbus_slave_telemetry_includes],
-    dependencies: [
-        smbus_telemetry_target_deps,
-        conf_h_dep,
-    ],
+    dependencies: [smbus_telemetry_target_deps, conf_h_dep],
     cpp_args: ['-fno-lto'],
     install: true,
 )
@@ -44,11 +39,12 @@ foreach dep : smbus_telemetry_target_deps
 endforeach
 
 import('pkgconfig').generate(
-  name: 'smbus-telemetry-target',
-  description: 'SMBus device telemetry Library',
-  version: meson.project_version(),
-  requires: smbus_telemetry_target_reqs,
-  libraries: libsmbus_telemetry)
+    name: 'smbus-telemetry-target',
+    description: 'SMBus device telemetry Library',
+    version: meson.project_version(),
+    requires: smbus_telemetry_target_reqs,
+    libraries: libsmbus_telemetry,
+)
 
 smbus_slave_telemetry_dep = declare_dependency(
     include_directories: [smbus_slave_telemetry_includes],

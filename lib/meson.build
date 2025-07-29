@@ -5,26 +5,22 @@ subdir('include')
 nv_tal_gen = []
 
 # Add source files
-sources = ['tal.cpp', 'tal_shmem.cpp', 'tal_smbus.cpp',
-]
+sources = ['tal.cpp', 'tal_shmem.cpp', 'tal_smbus.cpp']
 
 shmem = dependency('nvidia-shmem')
-nv_tal_deps = [
-  shmem
-]
+nv_tal_deps = [shmem]
 
 if not get_option('smbus-telemetry-target').disabled()
-  nv_tal_deps += [smbus_slave_telemetry_dep]
+    nv_tal_deps += [smbus_slave_telemetry_dep]
 endif
 # Create library
 libtal = static_library(
-  'tal', sources, 
-  include_directories : nv_tal_includes,
-  dependencies: [
-    nv_tal_deps,
-    ],
-  install: true
-  )
+    'tal',
+    sources,
+    include_directories: nv_tal_includes,
+    dependencies: [nv_tal_deps],
+    install: true,
+)
 
 nv_tal_reqs = []
 foreach dep : nv_tal_deps
@@ -34,11 +30,12 @@ foreach dep : nv_tal_deps
 endforeach
 
 import('pkgconfig').generate(
-  name: 'nvidia-tal',
-  description: 'Nvidia TAL Library',
-  version: meson.project_version(),
-  requires: nv_tal_reqs,
-  libraries: libtal)
+    name: 'nvidia-tal',
+    description: 'Nvidia TAL Library',
+    version: meson.project_version(),
+    requires: nv_tal_reqs,
+    libraries: libtal,
+)
 
 nv_tal_dep = declare_dependency(
     include_directories: [nv_tal_includes],

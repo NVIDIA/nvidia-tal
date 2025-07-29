@@ -8,21 +8,19 @@ if not gtest_dep.found() or not gmock_dep.found()
                 dependency('threads'),
                 gtest_proj.dependency('gtest'),
                 gtest_proj.dependency('gtest_main'),
-            ]
+            ],
         )
         gmock_dep = gtest_proj.dependency('gmock')
-  else
+    else
         assert(
             not get_option('tests').enabled(),
-            'Googletest is required if tests are enabled'
+            'Googletest is required if tests are enabled',
         )
-  endif
+    endif
 endif
 
 
-tests = [
-    'smbus_telemetry_target_utest',
-]
+tests = ['smbus_telemetry_target_utest']
 foreach t : tests
     test(
         'test_' + t.underscorify(),
@@ -35,7 +33,7 @@ foreach t : tests
                 conf_h_dep,
                 smbus_slave_telemetry_dep,
             ],
-            include_directories: include_directories('..'),            
-        )
+            include_directories: include_directories('..'),
+        ),
     )
 endforeach

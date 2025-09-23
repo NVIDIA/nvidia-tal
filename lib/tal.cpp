@@ -86,6 +86,31 @@ void TelemetryAggregator::updateTelemetry(
     }
 }
 
+void TelemetryAggregator::updateAggregateTelemetry(
+    std::vector<tal::TelemetryData>& telemetryData)
+{
+    // Limit how many times this error message can be logged in a row.
+    // This will log once per 10 minutes if there are continuous errors.
+    static uint repeatFailCount = 0;
+    if (!talInit)
+    {
+        repeatFailCount++;
+        if (repeatFailCount <= 5 ||
+            repeatFailCount % TAL_INIT_FAIL_COUNT_LOOP == 0)
+        {
+            lg2::error("namespaceInit for tal is not invoked");
+        }
+        return;
+    }
+    repeatFailCount = 0;
+
+    for (auto& [ns, module] : modules)
+    {
+        module->updateAggregateTelemetry(telemetryData);
+    }
+    return;
+}
+
 std::vector<nv::shmem::SensorValue>
     TelemetryAggregator::getAllMrds(const std::string& mrdNamespace)
 {

@@ -1,4 +1,8 @@
-smbus_slave_telemetry_includes = include_directories('include', '.')
+smbus_slave_telemetry_includes = include_directories(
+    'include',
+    '.',
+    '../../common',
+)
 
 subdir('include')
 

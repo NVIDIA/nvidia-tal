@@ -1,4 +1,4 @@
-nv_tal_includes = include_directories('include', '.')
+nv_tal_includes = include_directories('include', '.', '../common')
 
 subdir('include')
 

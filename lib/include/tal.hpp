@@ -46,6 +46,8 @@ Get all MRDs:
 
 #pragma once
 
+#include "utills.hpp"
+
 #include <shm_common.h>
 
 #include <cstdint>
@@ -53,7 +55,6 @@ Get all MRDs:
 #include <string>
 #include <unordered_map>
 #include <vector>
-
 // This value limits how many Tal init fail messages can be logged in a row.
 // Assuming there are 50 sensors, with 1 error per sensor per second,
 // this will log once per 10 minutes
@@ -103,6 +104,15 @@ class TelemetryAggregator
                                 const uint64_t timestamp, int rc,
                                 nv::sensor_aggregation::DbusVariantType& value,
                                 const std::string associatedEntityPath = {});
+
+    /**
+     * @brief API to call update aggregate telemetry for each of the telemetry
+     * module.
+     *
+     * @param[in] telemetryData - Telemetry data to update.
+     */
+    static void
+        updateAggregateTelemetry(std::vector<TelemetryData>& telemetryData);
 
     // Method to get all MRDs
     /**

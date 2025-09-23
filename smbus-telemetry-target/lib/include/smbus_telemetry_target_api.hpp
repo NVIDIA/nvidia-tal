@@ -17,10 +17,11 @@
 
 #pragma once
 
+#include "utills.hpp"
+
 #include <cstdint>
 #include <string>
 #include <vector>
-
 /*
  * @brief  The init API is used by the library to pre-populate all the meta data
  * necessary from data files and setup the data structures once on start up.
@@ -47,3 +48,12 @@ int updateSmbusTelemetry(const std::string& devicePath,
                          const std::string& propName,
                          std::vector<uint8_t>& data, const uint64_t timestamp,
                          int rc);
+
+/*
+ * @brief The updateSmbusAggregateTelemetry API will be used to update telemetry
+ * data on slave eeprom device on the corresponding offsets.
+ * @para1 telemetryData is telemetry data to update.
+ * @para2 timestamp is last refresh time.
+ */
+void updateSmbusAggregateTelemetry(
+    std::vector<tal::TelemetryData>& telemetryData);

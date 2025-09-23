@@ -16,10 +16,12 @@
  */
 
 #include "tal_module.hpp"
+#include "utills.hpp"
 
-#ifdef ENABLE_SMBUS
 namespace tal
 {
+#ifdef ENABLE_SMBUS
+
 class SmBusModule : public TelemetryHandler
 {
   public:
@@ -35,7 +37,10 @@ class SmBusModule : public TelemetryHandler
 
     bool namespaceInit(const std::string& processName) override;
 
+    void updateAggregateTelemetry(
+        std::vector<tal::TelemetryData>& telemetryData) override;
     virtual ~SmBusModule() = default;
 };
-} // namespace tal
+
 #endif
+} // namespace tal

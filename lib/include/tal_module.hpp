@@ -16,6 +16,8 @@
  */
 
 #pragma once
+#include "utills.hpp"
+
 #include <shm_common.h>
 
 #include <phosphor-logging/lg2.hpp>
@@ -69,6 +71,8 @@ class TelemetryHandler
                         std::vector<uint8_t>& rawData, const uint64_t timestamp,
                         int rc, nv::sensor_aggregation::DbusVariantType& value,
                         const std::string associatedEntityPath = {}) = 0;
+    virtual void updateAggregateTelemetry(
+        std::vector<tal::TelemetryData>& telemetryData) = 0;
 
     // Method to get all MRDs
     /**

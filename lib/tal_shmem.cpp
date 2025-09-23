@@ -32,6 +32,19 @@ int tal::SharedMemModule::updateTelemetry(
         associatedEntityPath);
 }
 
+void tal::SharedMemModule::updateAggregateTelemetry(
+    std::vector<tal::TelemetryData>& telemetryData)
+{
+    for (size_t idx = 0; idx < telemetryData.size(); idx++)
+    {
+        nv::shmem::AggregationService::updateTelemetry(
+            telemetryData[idx].devicePath, telemetryData[idx].interface,
+            telemetryData[idx].propName, telemetryData[idx].value,
+            telemetryData[idx].timestamp, telemetryData[idx].rc,
+            telemetryData[idx].associatedEntityPath);
+    }
+}
+
 bool tal::SharedMemModule::namespaceInit(const std::string& processName)
 {
     lg2::info(

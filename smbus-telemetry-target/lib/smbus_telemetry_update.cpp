@@ -252,4 +252,126 @@ int smbusSlaveUpdate(std::string dbusObjPath, std::string iface,
     return 0;
 }
 
+void smbusSlaveUpdateAggregate(std::vector<tal::TelemetryData>& telemetryData)
+{
+    for (size_t idx = 0; idx < telemetryData.size(); idx++)
+    {
+        std::string key = telemetryData[idx].devicePath + "_" +
+                          telemetryData[idx].interface + "_" +
+                          telemetryData[idx].propName;
+        if (sensorDataMap.find(key) == sensorDataMap.end())
+        {
+            // SmbusUpdate sensor configuration not supported.
+            continue;
+        }
+        smbusSensorDataQueue.push(std::make_tuple(
+            &sensorDataMap[key], telemetryData[idx].rawData,
+            telemetryData[idx].timestamp, telemetryData[idx].rc));
+    }
+    if (!smbusSensorDataQueue.empty())
+    {
+        flushBufferToEeprom();
+    }
+    return;
+}
+/*
+ * @brief  The flushBufferToEeprom API is used to process the smbus
+ * sensor data queue
+ * @para1 timeStampUpdated is the timestamp of the flush
+ * @return It return zero for success else error RC
+ */
+void flushBufferToEeprom()
+{
+    std::fstream eepromFile(i2cSlaveSysfs);
+    while (!smbusSensorDataQueue.empty())
+    {
+        auto& [sensorDataPtr, value, timestamp,
+               rc] = smbusSensorDataQueue.front();
+        SmbusSensorData& sensorData = *sensorDataPtr;
+
+        if (!eepromFile)
+        {
+            lg2::error(
+                "SMBus slave telemetry eeprom file not found : {I2CSLAVESYSFS}",
+                "I2CSLAVESYSFS", i2cSlaveSysfs);
+            smbusSensorDataQueue.pop();
+            continue;
+        }
+        // To avoid stale value on init
+        if (sensorData.initTs == true)
+        {
+            sensorData.previousTimeStamp = timestamp;
+            sensorData.initTs = false;
+        }
+        // Refresh timestamp for checking staleness
+        uint8_t stale = ((timestamp - sensorData.previousTimeStamp) >
+                         slaveI2cStaleThresholdMs)
+                            ? 1
+                            : 0;
+        sensorData.previousTimeStamp = timestamp;
+
+        bool success = (rc == 0) // smbpbi rc
+                           ? 1
+                           : 0;
+        if (!success)
+        {
+            stale = 1;
+            value.assign(sensorData.getOffsetDataLength(), 0xFF);
+        }
+
+        // Commit Value to the right offset
+        try
+        {
+            std::vector<uint8_t>& valBytes = value;
+            eepromFile.seekp(sensorData.getSensorOffset());
+            eepromFile.write(
+                reinterpret_cast<const char*>(valBytes.data()),
+                std::min((uint8_t)sensorData.getOffsetDataLength(),
+                         // commit min of actial bytes or mapped bytes
+                         static_cast<uint8_t>(valBytes.size())));
+        }
+        catch (const std::exception& e)
+        {
+            lg2::error("Unable to write data to eeprom file : {EXCEPTION}",
+                       "EXCEPTION", e.what());
+        }
+
+        // read-modify-write the stale bit
+        try
+        {
+            // Avoid stale offset update if staleness details configure as NA
+            if (sensorData.getStaleOffset() != -1 ||
+                sensorData.getStaleBit() != -1)
+            {
+                // read
+                uint8_t existingStaleValue = 0;
+                eepromFile.seekp(sensorData.getStaleOffset());
+                eepromFile.read(reinterpret_cast<char*>(&existingStaleValue),
+                                sizeof(existingStaleValue));
+
+                // modify
+                if (stale)
+                {
+                    existingStaleValue |= (1 << sensorData.getStaleBit());
+                }
+                else
+                {
+                    existingStaleValue &= ~(1 << sensorData.getStaleBit());
+                }
+
+                // write
+                eepromFile.seekp(sensorData.getStaleOffset());
+                eepromFile.write(reinterpret_cast<char*>(&existingStaleValue),
+                                 sizeof(existingStaleValue));
+            }
+        }
+        catch (const std::exception& e)
+        {
+            lg2::error("Unable to write stale to eeprom file :{EXCEPTION}",
+                       "EXCEPTION", e.what());
+        }
+        smbusSensorDataQueue.pop();
+    }
+}
+
 } // namespace smbus_telemetry_update

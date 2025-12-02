@@ -16,6 +16,7 @@
  */
 
 #include "tal_module.hpp"
+#include "utills.hpp"
 
 namespace tal
 {
@@ -35,6 +36,9 @@ class SharedMemModule : public TelemetryHandler
     std::vector<std::string> getMrdNamespaces() override;
 
     bool namespaceInit(const std::string& processName) override;
+
+    void updateAggregateTelemetry(
+        std::vector<tal::TelemetryData>& telemetryData) override;
 
     virtual ~SharedMemModule() = default;
 };

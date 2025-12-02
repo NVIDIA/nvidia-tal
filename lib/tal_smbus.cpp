@@ -19,6 +19,7 @@
 
 #ifdef ENABLE_SMBUS
 #include "smbus_telemetry_target_api.hpp"
+#include "smbus_telemetry_update.hpp"
 
 // Implementation for smbus updateTelemetry
 int tal::SmBusModule::updateTelemetry(
@@ -51,4 +52,9 @@ bool tal::SmBusModule::namespaceInit(const std::string& processName)
     return smbusSlaveInit();
 }
 
+void tal::SmBusModule::updateAggregateTelemetry(
+    std::vector<tal::TelemetryData>& telemetryData)
+{
+    updateSmbusAggregateTelemetry(telemetryData);
+}
 #endif

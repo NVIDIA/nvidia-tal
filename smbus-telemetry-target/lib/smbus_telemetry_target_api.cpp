@@ -29,7 +29,7 @@ bool smbusSlaveInit()
     // Checking for slave device
     if (std::strcmp(smbus_telemetry_update::i2cSlaveSysfs, "/dev/null") == 0)
     {
-        lg2::error("SMBus slave device not configured");
+        lg2::error("SMBus slave device not configured...");
         return false;
     }
 
@@ -62,4 +62,10 @@ int updateSmbusTelemetry(const std::string& devicePath,
     }
 
     return 0;
+}
+
+void updateSmbusAggregateTelemetry(
+    std::vector<tal::TelemetryData>& telemetryData)
+{
+    smbus_telemetry_update::smbusSlaveUpdateAggregate(telemetryData);
 }

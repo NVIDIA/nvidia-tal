@@ -17,12 +17,15 @@
 
 #include "config.h"
 
+#include "utills.hpp"
+
 #include <phosphor-logging/lg2.hpp>
 
 #include <algorithm>
 #include <fstream>
 #include <iostream>
 #include <map>
+#include <queue>
 #include <sstream>
 #include <string>
 #include <vector>
@@ -157,6 +160,10 @@ class SmbusSensorData
     }
 };
 
+inline std::queue<
+    std::tuple<SmbusSensorData*, std::vector<uint8_t>, uint64_t, int>>
+    smbusSensorDataQueue;
+
 /*
  * @brief  The loadFromCSV API is used to parse the data from csv file
  * and mapped the smbus record with its corresponding sensors
@@ -178,8 +185,22 @@ int loadFromCSV(const std::string& filename);
  *
  * @return It return zero for success else error RC
  */
-int smbusSlaveUpdate(std::string dbusObjPath, std::string iface,
-                     std::string propName, std::vector<uint8_t> value,
+int smbusSlaveUpdate(const std::string dbusObjPath, const std::string iface,
+                     const std::string propName, std::vector<uint8_t> value,
                      uint64_t timestamp, int rc);
+
+/*
+ * @brief The smbusSlaveUpdateAggregate API will be used to update sensor data
+ * on slave eeprom device on it corresponding offets.
+ * @para1 telemetryData is telemetry data to update.
+ */
+void smbusSlaveUpdateAggregate(std::vector<tal::TelemetryData>& telemetryData);
+/*
+ * @brief  The flushBufferToEeprom API is used to process the smbus
+ * sensor data queue
+ * @para1 timestamp to write to the eeprom
+ * @return It return zero for success else error RC
+ */
+void flushBufferToEeprom();
 
 } // namespace smbus_telemetry_update

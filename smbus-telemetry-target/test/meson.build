@@ -35,5 +35,6 @@ foreach t : tests
             ],
             include_directories: include_directories('..'),
         ),
+        workdir: meson.project_source_root(),
     )
 endforeach

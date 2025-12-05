@@ -32,7 +32,8 @@
 
 namespace smbus_telemetry_update
 {
-constexpr auto i2cSlaveSysfs = SMBUS_SYSFS_PATH;
+extern const char* i2cSlaveSysfs;
+
 using smbusSensorMap = std::map<std::string, class SmbusSensorData>;
 
 /*

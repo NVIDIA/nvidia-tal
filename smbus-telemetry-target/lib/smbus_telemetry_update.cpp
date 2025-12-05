@@ -25,6 +25,7 @@ namespace smbus_telemetry_update
 smbusSensorMap sensorDataMap;
 uint64_t slaveI2cStaleThresholdMs;
 int smbusSlaveVer;
+const char* i2cSlaveSysfs = SMBUS_SYSFS_PATH;
 
 bool isValidCSVData(std::vector<std::vector<std::string>>& csvData)
 {

@@ -9,7 +9,8 @@ subdir('include')
 smbus_telemetry_target_gen = []
 
 phosphor_logging = dependency('phosphor-logging')
-smbus_telemetry_target_deps = [phosphor_logging]
+nv_shmem = dependency('nvidia-shmem')
+smbus_telemetry_target_deps = [phosphor_logging, nv_shmem]
 
 conf_data = configuration_data()
 conf_data.set('libonly', get_option('libonly'))

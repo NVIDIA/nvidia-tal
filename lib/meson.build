@@ -44,3 +44,7 @@ nv_tal_dep = declare_dependency(
     dependencies: nv_tal_deps,
 )
 
+if not get_option('libtal-test').disabled()
+    subdir('test')
+endif
+

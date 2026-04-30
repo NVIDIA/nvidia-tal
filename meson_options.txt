@@ -30,4 +30,10 @@ option(
     value: 8,
     description: 'SMBus Data Record size',
 )
+option(
+    'libtal-test',
+    type: 'feature',
+    value: 'auto',
+    description: 'Build nvidia-tal unit tests',
+)
 
